@@ -1,0 +1,49 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - app-network
+
+  api:
+    build:
+      context: ./src
+      dockerfile: Api/Dockerfile
+    ports:
+      - "5000:80"
+    depends_on:
+      - rabbitmq
+    networks:
+      - app-network
+
+  worker-prod:
+    build:
+      context: ./src
+      dockerfile: Worker.Prod/Dockerfile
+    depends_on:
+      - rabbitmq
+    networks:
+      - app-network
+
+  worker-dev:
+    build:
+      context: ./src
+      dockerfile: Worker.Dev/Dockerfile
+    depends_on:
+      - rabbitmq
+    networks:
+      - app-network
+
+  worker-departments:
+    build:
+      context: ./src
+      dockerfile: Worker.Departments/Dockerfile
+    depends_on:
+      - rabbitmq
+    networks:
+      - app-network
+
+networks:
+  app-network:
